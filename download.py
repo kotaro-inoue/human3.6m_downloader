@@ -21,17 +21,15 @@ class cmcolor:
     INVISIBLE = '\033[08m'
     REVERCE = '\033[07m'
 
+def get_cookie(username,password):
+    cmd = 'rm cookies.txt checklogin.php'
+    ret = subprocess.call(cmd, shell=True)
+    print('Authentication is started')
+    cmd = 'wget --no-check-certificate --keep-session-cookies --save-cookies cookies.txt --post-data \'username=%s&password=%s\' \'https://vision.imar.ro/human3.6m/checklogin.php\'' % (username, password)
+    ret = subprocess.call(cmd, shell=True)
 
 ### Authentication ###
-flist = os.listdir('./')
-if 'cookies.txt' not in flist:
-    print('Authentication is started')
-    cmd = 'wget --no-check-certificate --keep-session-cookies --save-cookies cookies.txt --post-data \'username=%s&password=%s\' \'https://vision.imar.ro/human3.6m/checklogin.php\'' % (
-        username, password)
-    ret = subprocess.call(cmd, shell=True)
-else:
-    print(cmcolor.YELLOW + 'cookies.txt is already existed' + cmcolor.END)
-
+get_cookie(username,password)
 
 ### Human36 params ###
 baseurl = 'http://vision.imar.ro/human3.6m/filebrowser.php?download=1&filepath='
@@ -80,6 +78,7 @@ def listdir_extension(dir, extension):
 
 # Download Training dataset by subject
 for subject in subjects:
+    get_cookie(username,password)
     fdir = './training/subject/s%d/' % (subject[1])
     os.makedirs(fdir, exist_ok=True)
     flist = listdir_extension(fdir, 'tgz')
@@ -98,6 +97,7 @@ for subject in subjects:
 
 # Download Testing dataset by subject
 for subject in test_subjects:
+    get_cookie(username,password)
     fdir = './testing/subject/s%d/' % (subject[1])
     os.makedirs(fdir, exist_ok=True)
     flist = listdir_extension(fdir, 'tgz')
@@ -117,6 +117,7 @@ for subject in test_subjects:
 # Download Training dataset by scenario
 if dl_scenario:
     for subject in scenarios:
+        get_cookie(username,password)
         fdir = './training/scenario/%s/' % (subject[1])
         os.makedirs(fdir, exist_ok=True)
         flist = listdir_extension(fdir, 'tgz')
